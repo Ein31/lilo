@@ -37,9 +37,9 @@ add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
         COMMAND echfs-utils -g -p0 lilo.hdd quick-format 512
         COMMAND echfs-utils -g -p0 lilo.hdd import ${CMAKE_SOURCE_DIR}/limine.cfg limine.cfg
         COMMAND echfs-utils -g -p0 lilo.hdd import lilo lilo
-        COMMAND make -C ${CMAKE_SOURCE_DIR}/limine
-        COMMAND ${CMAKE_SOURCE_DIR}/limine/limine-install lilo.hdd
-        COMMAND echfs-utils -g -p0 lilo.hdd import ${CMAKE_SOURCE_DIR}/limine/limine.sys limine.sys
-        COMMAND rm -f ${CMAKE_SOURCE_DIR}/limine/limine-hdd.o ${CMAKE_SOURCE_DIR}/limine/limine-install
+        COMMAND make -C ${LIMINE_DIR}
+        COMMAND ${LIMINE_DIR}/limine-install lilo.hdd
+        COMMAND echfs-utils -g -p0 lilo.hdd import ${LIMINE_DIR}/limine.sys limine.sys
+        COMMAND rm -f ${LIMINE_DIR}/limine-hdd.o ${LIMINE_DIR}/limine-install
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         COMMENT "Building ECHFS for Lilo and Limine")
