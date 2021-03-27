@@ -13,7 +13,7 @@ echfs-utils -g -p0 image.hdd quick-format 512
  
 # Copy config file and kernel file(s) over into the image.
 echfs-utils -g -p0 image.hdd import limine.cfg limine.cfg
-echfs-utils -g -p0 image.hdd import myos.elf myos.elf
+echfs-utils -g -p0 image.hdd import lilo lilo
  
 # Download the latest Limine binary release
 git clone https://github.com/limine-bootloader/limine.git --branch=v2.0-branch-binary --depth=1
