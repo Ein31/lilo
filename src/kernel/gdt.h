@@ -20,4 +20,8 @@
 #define GDT_FLAG_MODE32BIT (1 << 2)
 #define GDT_FLAG_MODE64BIT (1 << 1)
 
+#define GDT_SIZE 3
+
+void gdt_init ();
+
 #endif //LILO_GDT_H

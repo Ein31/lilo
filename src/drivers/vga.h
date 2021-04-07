@@ -33,8 +33,9 @@ typedef enum {
     White
 } VGA_Colors;
 
-void print_c (char c, VGA_Colors foreground, VGA_Colors background, bool blink);
-void print_s (char *text, VGA_Colors foreground, VGA_Colors background, bool blink);
-void scroll ();
+void vga3_print_c (char c, VGA_Colors foreground, VGA_Colors background);
+void vga3_print (char *text, VGA_Colors foreground, VGA_Colors background);
+void vga3_scroll ();
+int vga3_setCursor (uint8_t xPos, uint8_t yPos);
 
 #endif //LILO_VGA_H

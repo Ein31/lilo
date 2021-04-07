@@ -4,6 +4,7 @@
 
 #include <stdint-gcc.h>
 #include "vga.h"
+#include "../util/io.h"
 
 #define VGA_BASE_ADDR 0XB8000
 #define VGA_WIDTH 80
@@ -19,7 +20,7 @@ typedef struct {
 
 volatile VGA_Cell (*VGA_CELLS)[VGA_WIDTH] = (VGA_Cell (*)[VGA_WIDTH]) VGA_BASE_ADDR;
 
-void scroll ()
+void vga3_scroll ()
 {
   for (int i = 0; i < VGA_HEIGHT - 1; i++)
     {
@@ -30,11 +31,19 @@ void scroll ()
           VGA_CELLS[i][j] = src;
         }
     }
+  VGA_Cell blank_cell;
+  blank_cell.displayChar = ' ';
+  blank_cell.flags = 0;
+  for (int i = 0; i < VGA_WIDTH; i++)
+    {
+      VGA_CELLS[VGA_HEIGHT - 1][i] = blank_cell;
+    }
   row--;
   col = 0;
+  vga3_setCursor (row, col);
 }
 
-void print_c (char c, VGA_Colors foreground, VGA_Colors background, bool blink)
+void vga3_print_c (char c, VGA_Colors foreground, VGA_Colors background)
 {
   if (c == 0)
     {
@@ -52,28 +61,35 @@ void print_c (char c, VGA_Colors foreground, VGA_Colors background, bool blink)
       vga_cell.flags = 0;
       vga_cell.flags = foreground;
       vga_cell.flags |= background << 4;
-      if (blink)
-        {
-          vga_cell.flags |= 1 << 8;
-        }
       VGA_CELLS[row][col] = vga_cell;
       col++;
     }
   if (col >= VGA_WIDTH)
     {
-      col--;
+      col = 0;
       row++;
     }
   if (row >= VGA_HEIGHT)
     {
-      scroll ();
+      vga3_scroll ();
     }
+  vga3_setCursor (row, col);
 }
 
-void print_s (char *text, VGA_Colors foreground, VGA_Colors background, bool blink)
+void vga3_print (char *text, VGA_Colors foreground, VGA_Colors background)
 {
   for (int i = 0; text[i] != 0; i++)
     {
-      print_c (text[i], foreground, background, blink);
+      vga3_print_c (text[i], foreground, background);
     }
+}
+
+int vga3_setCursor (uint8_t yPos, uint8_t xPos)
+{
+  uint8_t compositePos = yPos * VGA_WIDTH + xPos;
+  outb (0x3D4, 0x0F);
+  outb (0x3D5, (compositePos & 0xFF));
+  outb (0x3D4, 0x0E);
+  outb (0x3D5, ((compositePos >> 8) & 0xFF));
+  return 0;
 }

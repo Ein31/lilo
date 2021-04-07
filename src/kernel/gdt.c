@@ -19,13 +19,12 @@ typedef struct {
     uint64_t offset;
 }__attribute__((packed)) GDT_Descriptor;
 
-static GDT_Descriptor gdtDescriptor;
-static const uint8_t gdtSize = 3;
-static GDT_Entry gdt[3];
+static GDT_Descriptor GDT_DESCRIPTOR;
+static GDT_Entry GDT_ENTRIES[GDT_SIZE];
 
-void edit_gdt_entry (int entry_index, uint32_t base, uint32_t limit, uint8_t access, uint8_t flags)
+void gdt_edit_entry (int entry_index, uint32_t base, uint32_t limit, uint8_t access, uint8_t flags)
 {
-  GDT_Entry *entry = &gdt[entry_index];
+  GDT_Entry *entry = &GDT_ENTRIES[entry_index];
   entry->base_low = (base & 0x0000FFFF);
   entry->limit_low = (limit && 0x0000FFFF);
   entry->base_mid = (base & 0x00FF0000) >> 16;
@@ -35,13 +34,15 @@ void edit_gdt_entry (int entry_index, uint32_t base, uint32_t limit, uint8_t acc
   entry->base_high = (base & 0xFF000000) >> 24;
 }
 
-void init_gdt ()
+void gdt_init ()
 {
-  edit_gdt_entry (0, 0, 0, GDT_ATTR_NULL, GDT_FLAG_NULL);
-  edit_gdt_entry (1, 0, 0xFFFFFFFF, GDT_ATTR_CODE | GDT_ATTR_EXEC | GDT_ATTR_PRESENT | GDT_ATTR_RW,
+  //The first GDT Entry isn't used so we can just do placeholders.
+  //Rest of it we're just going to do a flat map for memory.
+  gdt_edit_entry (0, 0, 0, GDT_ATTR_NULL, GDT_FLAG_NULL);
+  gdt_edit_entry (1, 0, 0xFFFFFFFF, GDT_ATTR_CODE | GDT_ATTR_EXEC | GDT_ATTR_PRESENT | GDT_ATTR_RW,
                   GDT_FLAG_GRAN4K | GDT_FLAG_MODE64BIT);
-  edit_gdt_entry (2, 0, 0xFFFFFFFF,
+  gdt_edit_entry (2, 0, 0xFFFFFFFF,
                   GDT_ATTR_CODE | GDT_ATTR_PRESENT | GDT_ATTR_RW, GDT_FLAG_GRAN4K | GDT_FLAG_MODE64BIT);
-  gdtDescriptor.offset = &gdt;
-  gdtDescriptor.size = sizeof (gdt) - 1;
+  GDT_DESCRIPTOR.offset = &GDT_ENTRIES;
+  GDT_DESCRIPTOR.size = sizeof (GDT_ENTRIES) - 1;
 }
