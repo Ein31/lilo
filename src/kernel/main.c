@@ -32,6 +32,7 @@ void _start (struct stivale2_struct *stivale2_struct)
   vga3_print ("Lilo VGA Running in Mode 3\n", Yellow, Blue);
   gdt_init ();
   vga3_print ("GDT Initialized\n", Yellow, Blue);
-
+  idt_init ();
+  vga3_print ("IDT Initialized\n", Yellow, Blue);
   asm ("hlt");
 }

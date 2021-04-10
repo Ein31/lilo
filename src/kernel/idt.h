@@ -8,5 +8,7 @@
 #include <stdint-gcc.h>
 
 #define IDT_SIZE 256
+void idt_init ();
+
 
 #endif //_IDT_H_

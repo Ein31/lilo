@@ -27,7 +27,7 @@ set(CMAKE_C_FLAGS "${CORE_C_FLAGS} -Wall -Wextra -O2 -pipe")
 ## A simple lib to test C compilation and linking
 
 ## Building the kernel binary
-add_executable(${CMAKE_PROJECT_NAME} src/kernel/main.c src/kernel/stivale2.h src/drivers/vga.c src/drivers/vga.h src/kernel/gdt.c src/kernel/gdt.h src/util/io.c src/util/io.h src/kernel/idt.c src/kernel/idt.h)
+add_executable(${CMAKE_PROJECT_NAME} src/kernel/main.c src/kernel/stivale2.h src/drivers/vga.c src/drivers/vga.h src/kernel/gdt.c src/kernel/gdt.h src/util/io.c src/util/io.h src/kernel/idt.c src/kernel/idt.h src/kernel/isr.c libc/stdlib.c libc/stdlib.c libc/stdlib.h)
 set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES LINK_FLAGS ${CORE_LD_FLAGS})
 
 add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
